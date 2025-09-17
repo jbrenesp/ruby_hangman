@@ -8,6 +8,13 @@ class Hangman
     filtered_words = words.select { |w| w.length.between?(5, 12)}
 
     @secret_word = filtered_words.sample
+
+    @correct_guesses = []
+    @wrong_guesses = []
+  end
+
+  def display_word
+    @secret_word.chars.map { |l| @correct_guesses.include?(l) ? l: "_" }.join(" ")
   end
 
   def play
