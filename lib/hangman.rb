@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'yaml'
 
 # Class representing a command-line Hangman game
 class Hangman
@@ -24,7 +25,7 @@ class Hangman
     puts '🎮 Game starting...'
     puts "Secret word has #{@secret_word.length} letters!"
 
-    @lives = 6
+    @lives = 12
 
     until (@secret_word.chars - @correct_guesses).empty? || @lives <= 0
       puts "\nWord: #{display_word}"
@@ -46,6 +47,15 @@ class Hangman
         @lives -= 1
         puts '❌ Incorrect!'
       end
+
+      if guess == 'save'
+        save_game
+        puts "👋 Game saved. Exiting..."
+        return
+      end
+      
+
+
     end
 
     if (@secret_word.chars - @correct_guesses).empty?
@@ -54,4 +64,25 @@ class Hangman
       puts "💀 You ran out of lives! The word was: #{@secret_word}."
     end
   end
+
+  private
+  def save_dir
+    File.join(__dir__, '..', 'save')
+  end
+
+  def save_game(filename = nil)
+    Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+    filename ||= "hangman_#{Time.now.strftime('%Y%m%d%H%M%S')}.yml}"
+    filename += '.yml' unless filename.end_with?('.yml')
+    path = File.join(save_dir, filename)
+
+    state = {
+      'secret_word' => @secret_word,
+      'lives'  => @lives,
+      'correct_guesses' => @correct_guesses,
+      'wrong_guesses' => @wrong_guesses
+    }
+
+    File.write(path, YAML.dump(state))
+    puts "💾 Game saved to #{path}"
 end
