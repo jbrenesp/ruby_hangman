@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'yaml'
 
 # Class representing a command-line Hangman game
@@ -34,6 +35,12 @@ class Hangman
       print 'Enter a letter: '
       guess = gets.chomp.downcase
 
+      if guess == 'save'
+        save_game
+        puts '👋 Game saved. Exiting...'
+        return
+      end
+
       if (@correct_guesses + @wrong_guesses).include?(guess)
         puts "⚠️ You already guessed '#{guess}'. Try a different letter."
         next
@@ -47,15 +54,6 @@ class Hangman
         @lives -= 1
         puts '❌ Incorrect!'
       end
-
-      if guess == 'save'
-        save_game
-        puts "👋 Game saved. Exiting..."
-        return
-      end
-      
-
-
     end
 
     if (@secret_word.chars - @correct_guesses).empty?
@@ -66,23 +64,29 @@ class Hangman
   end
 
   private
+
   def save_dir
     File.join(__dir__, '..', 'save')
   end
 
   def save_game(filename = nil)
     Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
-    filename ||= "hangman_#{Time.now.strftime('%Y%m%d%H%M%S')}.yml}"
+    print 'enter a name for your save file or press enter: '
+    input = gets.chomp
+    filename = input unless input.strip.empty?
+
+    filename ||= "hangman_#{Time.now.strftime('%Y%m%d%H%M%S')}.yml"
     filename += '.yml' unless filename.end_with?('.yml')
     path = File.join(save_dir, filename)
 
     state = {
       'secret_word' => @secret_word,
-      'lives'  => @lives,
+      'lives' => @lives,
       'correct_guesses' => @correct_guesses,
       'wrong_guesses' => @wrong_guesses
     }
 
     File.write(path, YAML.dump(state))
     puts "💾 Game saved to #{path}"
+  end
 end

@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 # Gemfile
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 # Development tools
-gem "rubocop", require: false
-
+gem 'rubocop', require: false
