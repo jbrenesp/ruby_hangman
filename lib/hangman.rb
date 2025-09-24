@@ -26,7 +26,7 @@ class Hangman
     puts '🎮 Game starting...'
     puts "Secret word has #{@secret_word.length} letters!"
 
-    @lives = 12
+    @lives ||= 12
 
     until (@secret_word.chars - @correct_guesses).empty? || @lives <= 0
       puts "\nWord: #{display_word}"
@@ -88,5 +88,15 @@ class Hangman
 
     File.write(path, YAML.dump(state))
     puts "💾 Game saved to #{path}"
+  end
+
+  def self.load_game(filename)
+    state = YAML.load_file(filename)
+    game = new
+    game.instance_variable_set(:@secret_word, state['secret_word'])
+    game.instance_variable_set(:@lives, state['lives'])
+    game.instance_variable_set(:@correct_guesses, state['correct_guesses'])
+    game.instance_variable_set(:@wrong_guesses, state['wrong_guesses'])
+    game
   end
 end

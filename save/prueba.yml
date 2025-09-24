@@ -1,0 +1,9 @@
+---
+secret_word: extraction
+lives: 11
+correct_guesses:
+- e
+- i
+- o
+wrong_guesses:
+- u

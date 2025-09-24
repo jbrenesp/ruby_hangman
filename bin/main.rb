@@ -13,9 +13,13 @@ if choice == '2'
   files = Dir[File.join(save_dir, '*.yml')]
 
   if files.any?
-    hangman = Hangman.load_game(files.first)
+    puts "Select a save file to load:"
+    files.each_with_index { |f, i| puts "#{i + 1}: #{File.basename(f)}" }
+    file_choice = gets.chomp.to_i
+    filename = files[file_choice - 1] || files.first
+    hangman = Hangman.load_game(filename)
   else
-    puts 'No saved games found. Starting a new game...'
+    puts "No saved games found. Starting a new game..."
     hangman = Hangman.new
   end
 else
@@ -23,3 +27,4 @@ else
 end
 
 hangman.play
+   
